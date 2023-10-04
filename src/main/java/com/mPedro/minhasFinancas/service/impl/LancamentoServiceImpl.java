@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.mPedro.minhasFinancas.exceptions.RegraNegocioException;
 import com.mPedro.minhasFinancas.model.entity.Lancamento;
 import com.mPedro.minhasFinancas.model.enums.StatusLancamento;
+import com.mPedro.minhasFinancas.model.enums.TipoLancamento;
 import com.mPedro.minhasFinancas.model.repository.LancamentoRepository;
 import com.mPedro.minhasFinancas.service.LancamentoService;
 
@@ -100,6 +101,25 @@ public class LancamentoServiceImpl implements LancamentoService {
 	public Optional<Lancamento> obterPorId(Long id) {
 		// TODO Auto-generated method stub
 		return repository.findById(id);
+	}
+
+	@Override
+	public BigDecimal obterSaldoPorUsuario(Long id) {
+		BigDecimal receitas =  repository.obterSaldoPorTipoLancamentoEusuario(id, TipoLancamento.RECEITA.name());
+		
+		BigDecimal despesas =  repository.obterSaldoPorTipoLancamentoEusuario(id, TipoLancamento.DESPESA.name());
+		
+		if (receitas == null) {
+			receitas = BigDecimal.ZERO;
+		}
+		
+		if (despesas == null) {
+			despesas = BigDecimal.ZERO;
+		}
+		
+		return receitas.subtract(despesas);
+
+		
 	}
 
 }
